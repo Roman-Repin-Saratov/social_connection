@@ -20,6 +20,7 @@ const userProfileSchema = new Schema(
       },
     ],
     isActive: { type: Boolean, default: true },
+    onboardingCompleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

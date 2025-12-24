@@ -11,6 +11,8 @@ const { connectMongo } = require('./lib/mongo');
 const { secondScreenRouter } = require('./second-screen/routes');
 const { initSecondScreenSocket } = require('./second-screen/socket');
 const { requireSecondScreenKey } = require('./second-screen/ss-middleware');
+const { secondScreenPageRouter } = require('./second-screen/page');
+const { setIO } = require('./lib/realtime');
 
 const PORT = process.env.PORT || 3000;
 
@@ -27,6 +29,9 @@ async function bootstrap() {
     res.json({ ok: true, env: process.env.NODE_ENV || 'development' });
   });
 
+  // Second screen HTML (protected via ?key=...)
+  app.use(secondScreenPageRouter);
+
   // Protect all second-screen REST API endpoints
   app.use('/conference', requireSecondScreenKey, secondScreenRouter);
 
@@ -41,12 +46,26 @@ async function bootstrap() {
   });
 
   initSecondScreenSocket(io);
+  setIO(io);
 
   // Telegram bot
   initBot();
 
   server.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
+  });
+
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`\n❌ Port ${PORT} is already in use!`);
+      console.error(`   Please stop the process using port ${PORT} or change PORT in .env`);
+      console.error(`   On Windows, you can find and kill the process with:`);
+      console.error(`   netstat -ano | findstr :${PORT}`);
+      console.error(`   taskkill /F /PID <PID>\n`);
+    } else {
+      console.error('Server error:', err);
+    }
+    process.exit(1);
   });
 }
 

@@ -37,7 +37,8 @@ router.get('/:code/questions', async (req, res) => {
 
     const questions = await Question.find({
       conference: conference._id,
-    });
+      status: 'approved',
+    }).sort({ createdAt: 1 });
 
     res.json({ items: questions });
   } catch (err) {
@@ -64,6 +65,8 @@ router.get('/:code/stats', async (req, res) => {
         id: conference._id,
         code: conference.conferenceCode,
         title: conference.title,
+        currentSlideUrl: conference.currentSlideUrl || null,
+        currentSlideTitle: conference.currentSlideTitle || null,
       },
       stats: {
         polls: pollCount,
