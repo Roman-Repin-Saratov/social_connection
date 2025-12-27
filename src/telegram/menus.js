@@ -292,8 +292,8 @@ function getPollManagementMenu(pollId, conferenceCode) {
   return Markup.inlineKeyboard([
     [Markup.button.callback('✏️ Редактировать', `poll:edit:${pollId}`)],
     [Markup.button.callback('⏸️ Деактивировать', `poll:deactivate:${pollId}`)],
-    [Markup.button.callback('🗑️ Удалить', `poll:delete:${pollId}`)],
-    [Markup.button.callback('◀️ Назад', `menu:admin_polls:${conferenceCode}`)],
+    [Markup.button.callback('🗑️ Удалить', `poll:delete:${pollId}:${conferenceCode}`)],
+    [Markup.button.callback('◀️ Назад', `admin:polls:${conferenceCode}`)],
   ]);
 }
 

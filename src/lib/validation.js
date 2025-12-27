@@ -52,7 +52,7 @@ const lookingForSchema = Joi.array()
 
 const userProfileSchema = Joi.object({
   firstName: nameSchema.optional(),
-  lastName: nameSchema.optional(),
+  lastName: nameSchema.allow('').optional(), // Allow empty string for lastName
   interests: interestsSchema.optional(),
   offerings: offeringsSchema.optional(),
   lookingFor: lookingForSchema.optional(),
@@ -98,7 +98,7 @@ const pollQuestionSchema = Joi.string()
   });
 
 const pollOptionSchema = Joi.object({
-  id: Joi.number().integer().min(0).required(),
+  id: Joi.number().integer().min(0).optional(), // ID is auto-generated in service, optional for input
   text: Joi.string()
     .trim()
     .min(1)
